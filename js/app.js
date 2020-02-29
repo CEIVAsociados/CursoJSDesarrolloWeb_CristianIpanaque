@@ -1,4 +1,4 @@
-var valor_ini = "0", num_concat, a, b, resul;
+var valor_ini = "0", num_concat, a, b, resul, oper;
 var display = document.getElementById("display");
 
 function agregarTextoDisplay(texto){
@@ -30,7 +30,15 @@ function agregarPunto(valor){
 }
 function realizarOperacion(){
 	b = num_concat; //ultimo numero concatenado
-	resul = parseFloat(a) + parseFloat(b);
+	if(oper == "mas"){
+		resul = parseFloat(a) + parseFloat(b);
+	}else if(oper == "menos"){
+		resul = parseFloat(a) - parseFloat(b);
+	}else if(oper == "por"){
+		resul = parseFloat(a) * parseFloat(b);
+	}else if(oper == "dividido"){
+		resul = parseFloat(a) / parseFloat(b);
+	}
 	resul = agregarResultado(resul);
 	agregarTextoDisplay(resul);
 	a = resul; //resultado = a
@@ -42,10 +50,10 @@ var Calculadora = {
 		this.concatenar("tecla");
 		document.getElementById("sign").onclick = this.agregarSignoMenos;
 		document.getElementById("on").onclick = this.borrarCadena;
-		document.getElementById("mas").onclick = this.calcularSuma;
-		document.getElementById("menos").onclick = this.calcularResta;
-		document.getElementById("por").onclick = this.calcularMultiplicacion;
-		document.getElementById("dividido").onclick = this.calcularDivision;
+		document.getElementById("mas").onclick = this.iniciarOperacion;
+		document.getElementById("menos").onclick = this.iniciarOperacion;
+		document.getElementById("por").onclick = this.iniciarOperacion;
+		document.getElementById("dividido").onclick = this.iniciarOperacion;
 		document.getElementById("igual").onclick = realizarOperacion;
 	},
 	efectoteclas: function(selector){
@@ -87,19 +95,20 @@ var Calculadora = {
 		};
 	},
 	agregarSignoMenos: function(){
-		if(num_concat.includes("-") == true){
-			var cant_car = num_concat.length;
-			num_concat = num_concat.slice(1, cant_car);
+		if(display.innerHTML.includes("-") == true){
+			var cant_car = display.innerHTML.length;
+			num_concat = display.innerHTML.slice(1, cant_car);
 			agregarTextoDisplay(num_concat);
 		}else{
-			num_concat = "-"+num_concat;
+			num_concat = "-"+display.innerHTML;
 			agregarTextoDisplay(num_concat);
 		}
 	},
-	calcularSuma: function(){
+	iniciarOperacion: function(event){
 		a = display.innerHTML;
 		num_concat = ""; 
 		agregarTextoDisplay(num_concat);
+		oper = event.target.id;
 	},
 	borrarCadena: function(){
 		num_concat = "";
