@@ -1,18 +1,18 @@
-var valor_ini = 0, num_concat = "", a = "", b = "", resul = "";
+var valor_ini = "0", num_concat, a, b, resul;
+var display = document.getElementById("display");
 
 function agregarTextoDisplay(texto){
-	var display = document.getElementById("display");
 	display.innerHTML = texto;
 }
 
-function agregarResultado(resul){
-	var display = document.getElementById("display");
-	var cant = resul.length;
-	if(cant > 9){
-		resul = resul.slice(0, 8);
-		display.innerHTML = resul;
-	}else{
-		display.innerHTML = resul;
+function agregarResultado(resultado){
+	var result = resultado.toString();
+	var cant = result.length;
+	if(cant > 7){
+		return result = result.substr(0, 8);
+	}else {
+		display.innerHTML = result;
+		return result;
 	}
 }
 function agregarPunto(valor){
@@ -21,10 +21,19 @@ function agregarPunto(valor){
 		return valor;
 	}else if(valor.includes(".") == true){
 		return valor;
+	}else if(valor.length == 7){
+		return valor;
 	}else{
 		valor = valor + "."
 		return valor;
 	}
+}
+function realizarOperacion(){
+	b = num_concat; //ultimo numero concatenado
+	resul = parseFloat(a) + parseFloat(b);
+	resul = agregarResultado(resul);
+	agregarTextoDisplay(resul);
+	a = resul; //resultado = a
 }
 
 var Calculadora = {
@@ -37,6 +46,7 @@ var Calculadora = {
 		document.getElementById("menos").onclick = this.calcularResta;
 		document.getElementById("por").onclick = this.calcularMultiplicacion;
 		document.getElementById("dividido").onclick = this.calcularDivision;
+		document.getElementById("igual").onclick = realizarOperacion;
 	},
 	efectoteclas: function(selector){
 		var teclas = document.getElementsByClassName(selector);
@@ -55,28 +65,26 @@ var Calculadora = {
 			teclas[i].addEventListener("click", function () {
 				var id = teclas[i].id;
 				if(isNaN(id) == false || id == "punto"){
+					num_concat = display.innerHTML;
 					var contador = num_concat.length;
 					if(contador < 8){
 						if(id == "punto"){
 							num_concat = agregarPunto(num_concat);
 							agregarTextoDisplay(num_concat);
-						}else if(id == "0" && num_concat == ""){
+						}else if(id == "0" && num_concat == "0"){
 							agregarTextoDisplay(id);
+						}else if(num_concat == "0"){
+							num_concat = "";
+							num_concat += id;
+							agregarTextoDisplay(num_concat);
 						}else{
 							num_concat += id;
 							agregarTextoDisplay(num_concat);
-						}	
+						}
 					}
 				}
 			});
 		};
-	},
-	borrarCadena: function(){
-		num_concat = "";
-		a = 0;
-		b = 0;
-		resul = 0;
-		agregarTextoDisplay(valor_ini);
 	},
 	agregarSignoMenos: function(){
 		if(num_concat.includes("-") == true){
@@ -89,27 +97,16 @@ var Calculadora = {
 		}
 	},
 	calcularSuma: function(){
-		a = num_concat;
-		num_concat = "";
+		a = display.innerHTML;
+		num_concat = ""; 
 		agregarTextoDisplay(num_concat);
-		document.getElementById("igual").addEventListener("click", function(){
-			b = num_concat;
-			resul = parseFloat(a) + parseFloat(b);
-			agregarResultado(resul);
-			a = resul;
-		});
 	},
-	calcularResta: function(){
-		a = num_concat;
+	borrarCadena: function(){
 		num_concat = "";
-		agregarTextoDisplay(num_concat);
-		document.getElementById("igual").addEventListener("click", function(){
-			b = num_concat;
-			resul = parseFloat(a) - parseFloat(b);
-			agregarResultado(resul);
-			a = resul;
-		});
-	}
-
+		a = "";
+		b = "";
+		resul = "";
+		agregarTextoDisplay(valor_ini);
+	},
 }
 Calculadora.init();
